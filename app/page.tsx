@@ -4,22 +4,22 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '../src/store/authStore';
 
 export default function Page() {
-  const { user, role, loading } = useAuthStore();
+  const { user, role, currentDomain, loading } = useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
     if (loading) return;
     
     if (!user) {
-      router.replace('/login');
+      router.replace(currentDomain === 'hosteller' ? '/hosteller/login' : '/owner/login');
     } else if (role === 'owner') {
       router.replace('/owner/dashboard');
     } else if (role === 'hosteller') {
       router.replace('/hosteller/home');
     } else {
-      router.replace('/login');
+      router.replace('/owner/login');
     }
-  }, [user, role, loading, router]);
+  }, [user, role, currentDomain, loading, router]);
 
   return (
     <div className="min-h-screen bg-surface-50 flex items-center justify-center">

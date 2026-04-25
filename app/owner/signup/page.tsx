@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Building2, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { supabase } from '../../../src/services/supabase';
+import { ensureOwnerAuthRecords } from '../../../src/services/authBootstrap';
 import toast from 'react-hot-toast';
 
 const schema = z.object({
@@ -33,18 +34,46 @@ export default function OwnerSignup() {
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
+        options: {
+          data: {
+            name: data.name,
+            phone: data.phone,
+            role: 'owner',
+          },
+        },
       });
       if (signUpError) throw signUpError;
       if (!authData.user) throw new Error('User creation failed');
 
-      const userId = authData.user.id;
+      let signedInUser = authData.user;
 
-      await supabase.from('user_roles').insert({ id: userId, role: 'owner' });
+      if (!authData.session) {
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+          email: data.email,
+          password: data.password,
+        });
 
-      await supabase.from('owners').insert({
-        id: userId,
+        if (signInError) {
+          // If email confirmation is enabled, this path is expected.
+          if (signInError.message.toLowerCase().includes('confirm')) {
+            toast.success('Account created. Please verify your email, then sign in.');
+            router.push('/owner/login');
+            return;
+          }
+          throw signInError;
+        }
+
+        if (!signInData.user) {
+          throw new Error('Could not start session after signup. Please try signing in.');
+        }
+
+        signedInUser = signInData.user;
+      }
+
+      await ensureOwnerAuthRecords({
+        userId: signedInUser.id,
+        email: signedInUser.email ?? data.email,
         name: data.name,
-        email: data.email,
         phone: data.phone,
       });
 

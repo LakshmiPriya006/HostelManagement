@@ -36,7 +36,7 @@ export default function HostellerProfile() {
   }
 
   return (
-    <div className="p-4 sm:p-6 space-y-5 max-w-2xl mx-auto">
+    <div className="p-4 sm:p-6 space-y-5">
       <div>
         <h1 className="text-xl font-bold text-slate-900">My Profile</h1>
         <p className="text-sm text-slate-500">Manage your account settings</p>

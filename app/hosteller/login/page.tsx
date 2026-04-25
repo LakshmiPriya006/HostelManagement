@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import { Building2, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { supabase } from '../../../src/services/supabase';
+import { ensureHostellerRoleRecord } from '../../../src/services/authBootstrap';
 import toast from 'react-hot-toast';
 
 const schema = z.object({
@@ -41,12 +42,22 @@ export default function HostellerLogin() {
       });
       if (error) throw error;
 
+      const metadataRole = authData.user.user_metadata?.role;
+      if (metadataRole === 'hosteller') {
+        await ensureHostellerRoleRecord(authData.user.id);
+      }
+
       // Verify Role
-      const { data: roleData } = await supabase
+      const { data: roleData, error: roleError } = await supabase
         .from('user_roles')
         .select('role')
         .eq('id', authData.user.id)
         .maybeSingle();
+
+      if (roleError) {
+        await supabase.auth.signOut();
+        throw new Error(`Role verification failed: ${roleError.message}`);
+      }
 
       if (roleData?.role !== 'hosteller') {
         await supabase.auth.signOut();

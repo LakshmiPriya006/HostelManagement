@@ -97,8 +97,8 @@ export default function Settings() {
     if (!selectedHostelId) return;
     setPreviewLoading(true);
     try {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
       const { data: { session } } = await supabase.auth.getSession();
       const res = await fetch(`${supabaseUrl}/functions/v1/whatsapp-reminder`, {
         method: 'POST',
@@ -123,8 +123,8 @@ export default function Settings() {
     if (!selectedHostelId) return;
     setSendingReminders(true);
     try {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
       const { data: { session } } = await supabase.auth.getSession();
       const res = await fetch(`${supabaseUrl}/functions/v1/whatsapp-reminder`, {
         method: 'POST',

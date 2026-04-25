@@ -10,18 +10,22 @@ export default function NotificationBell() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const channelIdRef = useRef(`notif-${Math.random().toString(36).slice(2)}`);
 
   useEffect(() => {
     if (!user) return;
     fetchNotifications();
+    const channelName = `notifications-${user.id}-${channelIdRef.current}`;
     const channel = supabase
-      .channel(`notifications-${user.id}`)
+      .channel(channelName)
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${user.id}` },
         (payload) => {
           setNotifications(prev => [payload.new as Notification, ...prev]);
         })
       .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      void supabase.removeChannel(channel);
+    };
   }, [user]);
 
   useEffect(() => {

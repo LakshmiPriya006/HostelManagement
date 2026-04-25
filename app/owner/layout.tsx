@@ -6,7 +6,7 @@ import AiAssistant from '../../src/components/owner/AiAssistant';
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
-  if (pathname === '/owner/login' || pathname === '/owner/signup' || pathname === '/login' || pathname === '/signup') {
+  if (pathname === '/owner/login' || pathname === '/owner/signup' || pathname === '/owner/setup' || pathname === '/login' || pathname === '/signup') {
     return <>{children}</>;
   }
 

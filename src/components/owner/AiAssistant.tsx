@@ -90,8 +90,8 @@ export default function AiAssistant() {
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
       const res = await fetch(`${supabaseUrl}/functions/v1/ai-assistant`, {
         method: 'POST',

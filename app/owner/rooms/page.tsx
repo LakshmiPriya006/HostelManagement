@@ -33,6 +33,7 @@ export default function RoomManager() {
   const [roomHistory, setRoomHistory] = useState<RoomHistory[]>([]);
   const [roomDetailTab, setRoomDetailTab] = useState<'current' | 'history'>('current');
   const [showAddHosteller, setShowAddHosteller] = useState(false);
+  const [initialRoomIdForAdd, setInitialRoomIdForAdd] = useState<string | undefined>(undefined);
   const [moveOutHosteller, setMoveOutHosteller] = useState<Hosteller | null>(null);
   const [moveOutLoading, setMoveOutLoading] = useState(false);
 
@@ -165,7 +166,7 @@ export default function RoomManager() {
           <h1 className="section-title">Room Manager</h1>
           <p className="section-subtitle">{allRooms.length} rooms · {floorsWithRooms.length} floors</p>
         </div>
-        <button onClick={() => setShowAddHosteller(true)} className="btn-primary flex items-center gap-2 text-sm">
+        <button onClick={() => { setInitialRoomIdForAdd(undefined); setShowAddHosteller(true); }} className="btn-primary flex items-center gap-2 text-sm">
           <Plus size={16} /> Add Hosteller
         </button>
       </div>
@@ -353,7 +354,7 @@ export default function RoomManager() {
                 <div className="text-center py-8">
                   <User size={32} className="text-ink-300 mx-auto mb-2" />
                   <p className="text-ink-400 text-sm">No current residents</p>
-                  <button onClick={() => { setSelectedRoom(null); setShowAddHosteller(true); }} className="btn-primary text-sm mt-3">
+                  <button onClick={() => { setInitialRoomIdForAdd(selectedRoom?.id); setSelectedRoom(null); setShowAddHosteller(true); }} className="btn-primary text-sm mt-3">
                     Add Hosteller
                   </button>
                 </div>
@@ -433,9 +434,10 @@ export default function RoomManager() {
       {showAddHosteller && (
         <AddHostellerModal
           isOpen={showAddHosteller}
-          onClose={() => setShowAddHosteller(false)}
-          onSuccess={() => { setShowAddHosteller(false); load(); }}
+          onClose={() => { setInitialRoomIdForAdd(undefined); setShowAddHosteller(false); }}
+          onSuccess={() => { setInitialRoomIdForAdd(undefined); setShowAddHosteller(false); load(); }}
           rooms={allRooms}
+          initialRoomId={initialRoomIdForAdd}
         />
       )}
     </div>

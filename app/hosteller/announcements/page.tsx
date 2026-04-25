@@ -29,7 +29,7 @@ export default function HostellerAnnouncements() {
   useEffect(() => { load(); }, [load]);
 
   return (
-    <div className="p-4 sm:p-6 space-y-4 max-w-2xl mx-auto">
+    <div className="p-4 sm:p-6 space-y-4">
       <div>
         <h1 className="text-xl font-bold text-slate-900">Announcements</h1>
         <p className="text-sm text-slate-500">Messages from your hostel management</p>

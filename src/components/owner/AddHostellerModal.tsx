@@ -29,9 +29,10 @@ interface AddHostellerModalProps {
   onClose: () => void;
   onSuccess: () => void;
   rooms: Room[];
+  initialRoomId?: string;
 }
 
-export default function AddHostellerModal({ isOpen, onClose, onSuccess, rooms }: AddHostellerModalProps) {
+export default function AddHostellerModal({ isOpen, onClose, onSuccess, rooms, initialRoomId }: AddHostellerModalProps) {
   const { user } = useAuthStore();
   const { selectedHostelId } = useHostelStore();
   const [loading, setLoading] = useState(false);
@@ -40,6 +41,7 @@ export default function AddHostellerModal({ isOpen, onClose, onSuccess, rooms }:
   const { register, handleSubmit, watch, formState: { errors }, reset } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
+      room_id: initialRoomId || '',
       move_in_date: new Date().toISOString().split('T')[0],
       rent_paid: false,
       payment_mode: 'cash',
@@ -66,8 +68,8 @@ export default function AddHostellerModal({ isOpen, onClose, onSuccess, rooms }:
 
       const defaultPassword = (useHostelStore.getState().getSelectedHostel() as any)?.default_hosteller_password || '123456';
 
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || import.meta.env.NEXT_PUBLIC_SUPABASE_URL;
-      const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
       const { data: sessionData } = await supabase.auth.getSession();
       const accessToken = sessionData.session?.access_token || anonKey;

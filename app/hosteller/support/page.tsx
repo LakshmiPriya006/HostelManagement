@@ -87,7 +87,7 @@ export default function HostellerSupport() {
   const hasSubmitted = (formId: string) => submissions.some(s => s.form_id === formId);
 
   return (
-    <div className="p-4 sm:p-6 space-y-5 max-w-2xl mx-auto">
+    <div className="p-4 sm:p-6 space-y-5">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="section-title">Problems & Feedback</h1>

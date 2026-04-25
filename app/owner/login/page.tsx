@@ -43,11 +43,16 @@ export default function OwnerLogin() {
       if (error) throw error;
 
       // Verify Role
-      const { data: roleData } = await supabase
+      const { data: roleData, error: roleError } = await supabase
         .from('user_roles')
         .select('role')
         .eq('id', authData.user.id)
         .maybeSingle();
+
+      if (roleError) {
+        await supabase.auth.signOut();
+        throw new Error(`Role verification failed: ${roleError.message}`);
+      }
 
       if (roleData?.role !== 'owner') {
         await supabase.auth.signOut();
